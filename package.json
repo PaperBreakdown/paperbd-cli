@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "commander": "^14.0.1",
-    "dotenv": "^17.2.3",
     "open": "^10.2.0",
     "picocolors": "^1.1.1",
     "zod": "^3.25.76"

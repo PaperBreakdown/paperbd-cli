@@ -16,8 +16,7 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
 
   program
     .name('paperbd')
-    .description('PaperBD terminal client')
-    .option('--base-url <url>', 'Override PaperBD base URL');
+    .description('PaperBD terminal client');
 
   program
     .command('login')
