@@ -1,33 +1,34 @@
 # paperbd-cli
 
-PaperBD in your terminal.
+PaperBD command-line client.
+
+This repo builds the JavaScript distribution used by the public `paperbd` npm package.
+
+Paper Breakdown: `https://paperbreakdown.com`
 
 ## Install
 
-Download the binary for your platform and place it on your `PATH`.
-
-On macOS or Linux:
+Install the CLI:
 
 ```bash
-chmod +x paperbd
-mv paperbd /usr/local/bin/paperbd
+npm i -g paperbd
 ```
 
-Then verify:
+Install the PaperBD skill:
 
 ```bash
-paperbd --help
+npx skills add PaperBreakdown/paperbd-cli --skill paperbd-study-paper
 ```
 
 ## Login
 
-Authenticate in the browser:
+Authenticate in your browser:
 
 ```bash
 paperbd login
 ```
 
-This opens PaperBD in your browser. After you complete login, return to the terminal and the CLI will finish automatically.
+After you complete login, return to the terminal and the CLI will finish automatically.
 
 ## Commands
 
@@ -55,14 +56,15 @@ Ask about a paper by arXiv ID:
 paperbd ask --arxiv 2401.1234 --query "What training setup did they use?"
 ```
 
-Open the interactive terminal app:
-
-```bash
-paperbd
-```
+`paperbd ask` returns relevant PDF passages for the paper and query.
 
 Log out:
 
 ```bash
 paperbd logout
 ```
+
+## Notes
+
+- If a paper is not available in your account yet, start the paper review on `https://paperbreakdown.com` first.
+- Once the paper is available to you, use `paperbd papers` to confirm access before running `paperbd ask`.

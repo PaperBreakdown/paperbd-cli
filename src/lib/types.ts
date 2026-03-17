@@ -39,6 +39,5 @@ export type PapersResponse = {
 export type AskOptions = {
   arxivId: string;
   query: string;
-  modelName: string;
   maxSteps?: number;
 };

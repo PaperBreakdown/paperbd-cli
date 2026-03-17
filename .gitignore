@@ -2,3 +2,5 @@ node_modules
 .env
 dist
 release
+ship-paperbd-cli.sh
+*.tar.gz

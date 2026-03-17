@@ -1,14 +1,14 @@
 import { Command } from 'commander';
 import pc from 'picocolors';
-import { askPaper, getStoredSession, listPapers, loginWithBrowser, logout } from './api';
+import { askPaper, getStoredSession, listPapers, loginWithBrowser, logout } from './api.js';
 
 export type ParsedCliCommand =
-  | { kind: 'interactive' }
+  | { kind: 'help' }
   | { kind: 'login' }
   | { kind: 'status' }
   | { kind: 'logout' }
   | { kind: 'papers' }
-  | { kind: 'ask'; arxivId: string; query: string; modelName: string; maxSteps?: number };
+  | { kind: 'ask'; arxivId: string; query: string; maxSteps?: number };
 
 export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand | null> {
   const program = new Command();
@@ -74,13 +74,11 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
     .description('Ask a question about a paper by arXiv ID')
     .requiredOption('--arxiv <id>', 'The arXiv ID')
     .requiredOption('--query <text>', 'The question to ask')
-    .option('--model <name>', 'Model name', 'google/gemini-3.1-flash-lite')
     .option('--max-steps <number>', 'Maximum subagent steps')
     .action(async (options) => {
       const result = await askPaper({
         arxivId: options.arxiv,
         query: options.query,
-        modelName: options.model,
         maxSteps: options.maxSteps ? Number(options.maxSteps) : undefined,
       });
 
@@ -93,13 +91,13 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
         kind: 'ask',
         arxivId: options.arxiv,
         query: options.query,
-        modelName: options.model,
         maxSteps: options.maxSteps ? Number(options.maxSteps) : undefined,
       };
     });
 
   if (argv.length <= 2) {
-    return { kind: 'interactive' };
+    program.outputHelp();
+    return { kind: 'help' };
   }
 
   await program.parseAsync(argv);

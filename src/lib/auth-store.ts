@@ -1,7 +1,7 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import type { StoredAuth } from './types';
+import type { StoredAuth } from './types.js';
 
 const CONFIG_DIR = path.join(os.homedir(), '.paperbd-cli');
 const AUTH_FILE = path.join(CONFIG_DIR, 'auth.json');

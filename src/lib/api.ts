@@ -1,7 +1,7 @@
 import open from 'open';
 import { z } from 'zod';
-import { getBaseUrl } from './config';
-import { clearAuth, loadAuth, saveAuth } from './auth-store';
+import { getBaseUrl } from './config.js';
+import { clearAuth, loadAuth, saveAuth } from './auth-store.js';
 import type {
   AskOptions,
   LoginPollPendingResponse,
@@ -9,7 +9,11 @@ import type {
   LoginStartResponse,
   PapersResponse,
   RetrievalTextsResponse,
-} from './types';
+} from './types.js';
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const loginStartSchema = z.object({
   device_code: z.string(),
@@ -111,7 +115,7 @@ export async function loginWithBrowser() {
         email: result.email,
       };
     }
-    await Bun.sleep(start.interval_seconds * 1000);
+    await sleep(start.interval_seconds * 1000);
   }
 
   throw new Error('Login timed out before approval.');
@@ -140,7 +144,6 @@ export async function askPaper(options: AskOptions): Promise<RetrievalTextsRespo
     body: JSON.stringify({
       arxiv_id: options.arxivId,
       query: options.query,
-      model_name: options.modelName,
       max_steps: options.maxSteps,
     }),
   });
