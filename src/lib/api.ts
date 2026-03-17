@@ -144,7 +144,6 @@ export async function askPaper(options: AskOptions): Promise<RetrievalTextsRespo
     body: JSON.stringify({
       arxiv_id: options.arxivId,
       query: options.query,
-      max_steps: options.maxSteps,
     }),
   });
 

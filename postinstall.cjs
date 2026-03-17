@@ -1,5 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const readline = require('node:readline');
+const { spawnSync } = require('node:child_process');
 
 function readPackageJson() {
   const packageJsonPath = path.join(__dirname, 'package.json');
@@ -32,10 +34,40 @@ function extractRepoSlug(repoValue) {
 }
 
 function printLine(line = '') {
-  process.stdout.write(`${line}\n`);
+  process.stderr.write(`${line}\n`);
 }
 
-function main() {
+function canPrompt() {
+  if (process.env.CI) return false;
+  if (process.env.npm_config_global !== 'true') return false;
+  return Boolean(process.stdin.isTTY && process.stderr.isTTY);
+}
+
+function ask(question) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stderr,
+    });
+
+    rl.question(question, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
+}
+
+function runSkillInstall(repoSlug) {
+  const result = spawnSync(
+    process.platform === 'win32' ? 'npx.cmd' : 'npx',
+    ['skills', 'add', repoSlug, '--skill', 'paperbd-study-paper'],
+    { stdio: 'inherit' }
+  );
+
+  return result.status === 0;
+}
+
+async function main() {
   const packageJson = readPackageJson();
   const repoSlug = extractRepoSlug(resolveRepository(packageJson));
   const skillInstallCommand = repoSlug
@@ -59,6 +91,27 @@ function main() {
   printLine();
   printLine('If the paper is not available yet, start the paper review first on paperbreakdown.com.');
   printLine();
+
+  if (!repoSlug || !canPrompt()) {
+    return;
+  }
+
+  const answer = (await ask('Install the PaperBD skill now? [Y/n] ')).toLowerCase();
+  if (answer === 'n' || answer === 'no') {
+    printLine('Skipped skill install.');
+    return;
+  }
+
+  printLine();
+  const installed = runSkillInstall(repoSlug);
+  if (!installed) {
+    printLine();
+    printLine('Skill install did not complete. Run this manually:');
+    printLine(`  ${skillInstallCommand}`);
+  }
 }
 
-main();
+main().catch((error) => {
+  printLine();
+  printLine(`Postinstall warning: ${error instanceof Error ? error.message : String(error)}`);
+});

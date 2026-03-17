@@ -1,0 +1,19 @@
+PaperBD Proprietary License
+
+Copyright (c) PaperBD. All rights reserved.
+
+Permission is granted to view, download, and use this repository and the published `paperbd` npm package solely for internal evaluation and for authorized use of the PaperBD service.
+
+You may not, without prior written permission from PaperBD:
+
+1. Copy, modify, adapt, translate, or create derivative works of the software, except as required for ordinary local use of the unmodified software.
+2. Redistribute, sublicense, sell, lease, rent, lend, publish, or otherwise make the software available to any third party.
+3. Use the software, in whole or in part, to build, offer, or support a competing product or service.
+4. Reverse engineer, decompile, disassemble, or otherwise attempt to extract source, structure, or non-public behavior from any hosted PaperBD service, except to the extent such restriction is prohibited by applicable law.
+5. Remove or alter any copyright, trademark, or other proprietary notices.
+
+This license does not grant any right to use the PaperBD name, logo, branding, or other trademarks except as necessary to refer to the software.
+
+The software is licensed, not sold. All rights not expressly granted are reserved by PaperBD.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. IN NO EVENT SHALL PAPERBD BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OF THE SOFTWARE.

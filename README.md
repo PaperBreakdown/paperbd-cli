@@ -8,13 +8,19 @@ Paper Breakdown: `https://paperbreakdown.com`
 
 ## Install
 
-Install the CLI:
+Recommended installer:
+
+```bash
+npx install-paperbd@latest
+```
+
+Manual CLI install:
 
 ```bash
 npm i -g paperbd
 ```
 
-Install the PaperBD skill:
+Manual skill install:
 
 ```bash
 npx skills add PaperBreakdown/paperbd-cli --skill paperbd-study-paper

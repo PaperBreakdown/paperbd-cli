@@ -4,3 +4,4 @@ dist
 release
 ship-paperbd-cli.sh
 *.tar.gz
+*.tgz

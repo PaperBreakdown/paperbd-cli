@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import pc from 'picocolors';
 import { askPaper, getStoredSession, listPapers, loginWithBrowser, logout } from './api.js';
+import { enforceSupportedCliVersion } from './version-check.js';
 
 export type ParsedCliCommand =
   | { kind: 'help' }
@@ -8,7 +9,7 @@ export type ParsedCliCommand =
   | { kind: 'status' }
   | { kind: 'logout' }
   | { kind: 'papers' }
-  | { kind: 'ask'; arxivId: string; query: string; maxSteps?: number };
+  | { kind: 'ask'; arxivId: string; query: string };
 
 export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand | null> {
   const program = new Command();
@@ -73,12 +74,10 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
     .description('Ask a question about a paper by arXiv ID')
     .requiredOption('--arxiv <id>', 'The arXiv ID')
     .requiredOption('--query <text>', 'The question to ask')
-    .option('--max-steps <number>', 'Maximum subagent steps')
     .action(async (options) => {
       const result = await askPaper({
         arxivId: options.arxiv,
         query: options.query,
-        maxSteps: options.maxSteps ? Number(options.maxSteps) : undefined,
       });
 
       for (const text of result.texts) {
@@ -90,13 +89,16 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
         kind: 'ask',
         arxivId: options.arxiv,
         query: options.query,
-        maxSteps: options.maxSteps ? Number(options.maxSteps) : undefined,
       };
     });
 
   if (argv.length <= 2) {
     program.outputHelp();
     return { kind: 'help' };
+  }
+
+  if (!argv.includes('--help') && !argv.includes('-h')) {
+    await enforceSupportedCliVersion();
   }
 
   await program.parseAsync(argv);

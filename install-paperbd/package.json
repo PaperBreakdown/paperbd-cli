@@ -1,0 +1,26 @@
+{
+  "name": "install-paperbd",
+  "version": "0.1.4",
+  "private": false,
+  "description": "Installer for the PaperBD CLI and Paper Breakdown skill",
+  "bin": {
+    "install-paperbd": "index.cjs"
+  },
+  "files": [
+    "index.cjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PaperBreakdown/paperbd-cli.git",
+    "directory": "install-paperbd"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
