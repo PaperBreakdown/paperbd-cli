@@ -1,6 +1,6 @@
 {
   "name": "install-paperbd",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "private": false,
   "description": "Installer for the PaperBD CLI and Paper Breakdown skill",
   "bin": {

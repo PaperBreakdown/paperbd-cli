@@ -11,6 +11,19 @@ import type {
   RetrievalTextsResponse,
 } from './types.js';
 
+class CliApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number
+  ) {
+    super(message);
+    this.name = 'CliApiError';
+  }
+}
+
+const CLI_FEATURE_ACCESS_ERROR =
+  "You don't have access to this feature. Currently only STUDENT and RESEARCHER tier can use paper breakdown CLI. See pricing: https://paperbreakdown.com/pricing";
+
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -70,7 +83,7 @@ export async function startLogin(): Promise<LoginStartResponse> {
   });
 
   if (!response.ok) {
-    throw new Error(await parseApiError(response));
+    throw new CliApiError(await parseApiError(response), response.status);
   }
 
   return parseJson(response, loginStartSchema);
@@ -90,7 +103,7 @@ export async function pollLogin(deviceCode: string): Promise<LoginPollPendingRes
   }
 
   if (!response.ok) {
-    throw new Error(await parseApiError(response));
+    throw new CliApiError(await parseApiError(response), response.status);
   }
 
   return parseJson(response, loginPollSuccessSchema);
@@ -153,7 +166,23 @@ export async function askPaper(options: AskOptions): Promise<RetrievalTextsRespo
   }
 
   if (!response.ok) {
-    throw new Error(await parseApiError(response));
+    const apiError = await parseApiError(response);
+
+    if (response.status === 404) {
+      throw new Error(
+        `Paper ${options.arxivId} is not available in PaperBD yet. Visit https://paperbreakdown.com/abs/${options.arxivId} to submit it for analysis, then retry.`
+      );
+    }
+
+    if (response.status === 429) {
+      throw new Error('Too many CLI requests. Please wait a bit and try again.');
+    }
+
+    if (response.status === 403) {
+      throw new Error(CLI_FEATURE_ACCESS_ERROR);
+    }
+
+    throw new CliApiError(apiError, response.status);
   }
 
   return parseJson(response, retrievalTextsSchema);
@@ -178,7 +207,11 @@ export async function listPapers(): Promise<PapersResponse> {
   }
 
   if (!response.ok) {
-    throw new Error(await parseApiError(response));
+    if (response.status === 403) {
+      throw new Error(CLI_FEATURE_ACCESS_ERROR);
+    }
+
+    throw new CliApiError(await parseApiError(response), response.status);
   }
 
   return parseJson(response, papersSchema);

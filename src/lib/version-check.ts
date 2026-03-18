@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -53,9 +54,24 @@ function compareSemver(currentVersion: string, latestVersion: string) {
 }
 
 async function getCurrentVersion() {
-  const currentFile = fileURLToPath(import.meta.url);
-  const packageJsonPath = path.resolve(path.dirname(currentFile), '../../package.json');
+  const packageJsonPath = getPackageJsonPath();
   const packageJson = JSON.parse(await readFile(packageJsonPath, 'utf8')) as { version?: string };
+
+  if (!packageJson.version) {
+    throw new Error('Unable to determine the current paperbd version.');
+  }
+
+  return packageJson.version;
+}
+
+function getPackageJsonPath() {
+  const currentFile = fileURLToPath(import.meta.url);
+  return path.resolve(path.dirname(currentFile), '../../package.json');
+}
+
+export function getCurrentVersionSync() {
+  const packageJsonPath = getPackageJsonPath();
+  const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as { version?: string };
 
   if (!packageJson.version) {
     throw new Error('Unable to determine the current paperbd version.');

@@ -12,8 +12,11 @@ Guide the user from paper identification to answering questions in Paper Breakdo
 First, find the paper's arXiv ID.
 
 - If the user already gave a valid arXiv ID, use it.
-- If the user gave only a title, author, or vague description, identify the most likely arXiv paper.
-- If multiple papers could match, ask one targeted follow-up question.
+- If the user gave only a title, author, or vague description, first do a web search to find the arXiv ID.
+- If the web search does not produce a clear arXiv ID, search `export.arxiv.org` second.
+- Never guess or infer the arXiv ID from partial information.
+- Never spend excessive effort trying to recover the arXiv ID. If the web search and `export.arxiv.org` search both fail, ask the user to provide the arXiv ID directly.
+- If multiple papers could match, ask one targeted follow-up question or ask the user to provide the arXiv ID directly.
 - Do not proceed to PaperBD commands until you have a specific arXiv ID.
 
 ## 2. Verify that `paperbd` is installed
@@ -31,17 +34,11 @@ First, find the paper's arXiv ID.
 
 ## 4. Verify access to the paper
 
-Once you have an arXiv ID and a working logged-in CLI, tell the user to check access with:
-
-```bash
-paperbd papers | grep <arxiv_id>
-```
-
-Replace `<arxiv_id>` with the actual arXiv ID.
-
-- If the paper appears, continue.
-- If the paper does not appear, explain that they do not currently have access to that paper in Paper Breakdown.
-- If the user wants to start a new paper review or add a paper that is not already available, tell them to go to `paperbreakdown.com` to trigger it there first.
+- `paperbd papers` returns the list of papers the user currently has access to.
+- `paperbd ask --arxiv <arxiv_id> --query "<question>"` automatically tries to add the paper to that list.
+- If you have access to the terminal, run these commands yourself. If not, ask the user to run them.
+- If `paperbd ask` succeeds, continue with the answer.
+- If `paperbd ask` fails because the paper is not accessible, explain the error and next action.
 
 ## 5. Tell the user how to ask questions
 
@@ -52,6 +49,8 @@ paperbd ask --arxiv <arxiv_id> --query "<question>"
 ```
 
 - `paperbd ask` returns actual PDF passages relevant to the question.
+- `paperbd ask` also automatically tries to add the paper to the user's accessible paper list.
+- If you have access to the terminal, run this command yourself. If not, ask the user to run it.
 - This will print passages directly into the terminal
 - Ask simple questions
 

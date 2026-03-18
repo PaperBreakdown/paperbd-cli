@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import pc from 'picocolors';
 import { askPaper, getStoredSession, listPapers, loginWithBrowser, logout } from './api.js';
-import { enforceSupportedCliVersion } from './version-check.js';
+import { enforceSupportedCliVersion, getCurrentVersionSync } from './version-check.js';
 
 export type ParsedCliCommand =
   | { kind: 'help' }
@@ -12,12 +12,18 @@ export type ParsedCliCommand =
   | { kind: 'ask'; arxivId: string; query: string };
 
 export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand | null> {
+  if (argv.includes('--version') || argv.includes('-V')) {
+    console.log(getCurrentVersionSync());
+    return null;
+  }
+
   const program = new Command();
   let parsed: ParsedCliCommand | null = null;
 
   program
     .name('paperbd')
-    .description('PaperBD terminal client');
+    .description('PaperBD terminal client')
+    .version(getCurrentVersionSync());
 
   program
     .command('login')
@@ -38,7 +44,7 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
       } else {
         console.log(pc.green('Logged in.'));
         if (session.email) {
-          console.log(`Email: ${session.email}`);
+          console.log(`Email: ${obfuscateEmail(session.email)}`);
         }
         console.log(`Saved at: ${session.savedAt}`);
       }
@@ -97,10 +103,23 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
     return { kind: 'help' };
   }
 
-  if (!argv.includes('--help') && !argv.includes('-h')) {
+  if (!argv.includes('--help') && !argv.includes('-h') && !argv.includes('--version') && !argv.includes('-V')) {
     await enforceSupportedCliVersion();
   }
 
   await program.parseAsync(argv);
   return parsed;
+}
+
+function obfuscateEmail(email: string) {
+  const [localPart, domain] = email.split('@');
+  if (!localPart || !domain) {
+    return email;
+  }
+
+  if (localPart.length <= 2) {
+    return `${localPart[0] ?? '*'}*@${domain}`;
+  }
+
+  return `${localPart[0]}${'*'.repeat(localPart.length - 2)}${localPart[localPart.length - 1]}@${domain}`;
 }
