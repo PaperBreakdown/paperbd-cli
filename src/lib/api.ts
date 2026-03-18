@@ -9,6 +9,7 @@ import type {
   LoginStartResponse,
   PapersResponse,
   RetrievalTextsResponse,
+  UsageResponse,
 } from './types.js';
 
 class CliApiError extends Error {
@@ -58,6 +59,12 @@ const papersSchema = z.object({
       title: z.string(),
     })
   ),
+});
+
+const usageSchema = z.object({
+  remaining_paper_analysis: z.number().int().nonnegative(),
+  remaining_cli_requests: z.number().int().nonnegative(),
+  resets_at: z.string(),
 });
 
 async function parseJson<T>(response: Response, schema: z.ZodSchema<T>): Promise<T> {
@@ -170,7 +177,7 @@ export async function askPaper(options: AskOptions): Promise<RetrievalTextsRespo
 
     if (response.status === 404) {
       throw new Error(
-        `Paper ${options.arxivId} is not available in PaperBD yet. Visit https://paperbreakdown.com/abs/${options.arxivId} to submit it for analysis, then retry.`
+        `Paper ${options.arxivId} is not available in PaperBD yet. Visit https://paperbreakdown.com/search?query=${encodeURIComponent(options.arxivId)} to submit it for analysis, then retry.`
       );
     }
 
@@ -215,4 +222,33 @@ export async function listPapers(): Promise<PapersResponse> {
   }
 
   return parseJson(response, papersSchema);
+}
+
+export async function getUsage(): Promise<UsageResponse> {
+  const auth = await loadAuth();
+  if (!auth?.accessToken) {
+    throw new Error('Not logged in. Run `paperbd login` first.');
+  }
+
+  const response = await fetch(`${getBaseUrl()}/api/cli/usage`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${auth.accessToken}`,
+    },
+  });
+
+  if (response.status === 401) {
+    await clearAuth();
+    throw new Error('Stored session is no longer valid. Run `paperbd login` again.');
+  }
+
+  if (!response.ok) {
+    if (response.status === 403) {
+      throw new Error(CLI_FEATURE_ACCESS_ERROR);
+    }
+
+    throw new CliApiError(await parseApiError(response), response.status);
+  }
+
+  return parseJson(response, usageSchema);
 }

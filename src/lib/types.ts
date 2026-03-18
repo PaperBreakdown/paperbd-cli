@@ -36,6 +36,12 @@ export type PapersResponse = {
   papers: PaperSummary[];
 };
 
+export type UsageResponse = {
+  remaining_paper_analysis: number;
+  remaining_cli_requests: number;
+  resets_at: string;
+};
+
 export type AskOptions = {
   arxivId: string;
   query: string;

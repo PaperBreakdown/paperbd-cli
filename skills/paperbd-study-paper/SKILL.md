@@ -34,9 +34,17 @@ First, find the paper's arXiv ID.
 
 ## 4. Verify access to the paper
 
+- `paperbd usage` returns:
+  - remaining paper analyses
+    - Paper analysis means accessing new papers the user has never read with Paper Breakdown.
+  - remaining CLI requests
+    - CLI requests means every successful CLI query reduces this count.
+  - when the current quota resets
 - `paperbd papers` returns the list of papers the user currently has access to.
 - `paperbd ask --arxiv <arxiv_id> --query "<question>"` automatically tries to add the paper to that list.
 - If you have access to the terminal, run these commands yourself. If not, ask the user to run them.
+- Even if remaining paper analysis is `0`, still try `paperbd ask`.
+- If you want to verify whether the user already has access to a paper, check `paperbd papers | grep <arxiv_id>`.
 - If `paperbd ask` succeeds, continue with the answer.
 - If `paperbd ask` fails because the paper is not accessible, explain the error and next action.
 
@@ -76,7 +84,7 @@ After the paper is identified and access is confirmed, answer the user's actual 
   - Or monthly CLI quota was exceeded: `STUDENT` = 100, `RESEARCHER` = 200
 - `404 Not Found`
   - The paper is not accessible to that user
-  - New paper reviews must be started on `paperbreakdown.com`
+  - Tell the user to start the paper analysis from `https://paperbreakdown.com/search?query=<arxiv_id>`
 - `500 Internal Server Error`
   - Unexpected server-side failure, such as retrieval pipeline or backend issues
 

@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import pc from 'picocolors';
-import { askPaper, getStoredSession, listPapers, loginWithBrowser, logout } from './api.js';
+import { askPaper, getStoredSession, getUsage, listPapers, loginWithBrowser, logout } from './api.js';
 import { enforceSupportedCliVersion, getCurrentVersionSync } from './version-check.js';
 
 export type ParsedCliCommand =
@@ -8,6 +8,7 @@ export type ParsedCliCommand =
   | { kind: 'login' }
   | { kind: 'status' }
   | { kind: 'logout' }
+  | { kind: 'usage' }
   | { kind: 'papers' }
   | { kind: 'ask'; arxivId: string; query: string };
 
@@ -58,6 +59,17 @@ export async function parseAndRunCli(argv: string[]): Promise<ParsedCliCommand |
       await logout();
       console.log(pc.green('Logged out.'));
       parsed = { kind: 'logout' };
+    });
+
+  program
+    .command('usage')
+    .description('Show remaining CLI usage for the authenticated user')
+    .action(async () => {
+      const usage = await getUsage();
+      console.log(`Remaining paper analysis: ${usage.remaining_paper_analysis}`);
+      console.log(`Remaining CLI requests: ${usage.remaining_cli_requests}`);
+      console.log(`Resets at: ${usage.resets_at}`);
+      parsed = { kind: 'usage' };
     });
 
   program
