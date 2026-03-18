@@ -14,10 +14,10 @@ Recommended installer:
 npx install-paperbd@latest
 ```
 
-Manual CLI install:
+Install or upgrade the CLI:
 
 ```bash
-npm i -g paperbd
+npx install-paperbd@latest
 ```
 
 Manual skill install:

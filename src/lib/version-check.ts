@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const PACKAGE_NAME = 'paperbd';
 const REGISTRY_LATEST_URL = 'https://registry.npmjs.org/paperbd/latest';
-const UPDATE_COMMAND = 'npm install -g paperbd@latest';
+const UPDATE_COMMAND = 'npx install-paperbd@latest';
 
 type SemverParts = {
   major: number;

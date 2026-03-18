@@ -79,6 +79,9 @@ After the paper is identified and access is confirmed, answer the user's actual 
 - `429 Too Many Requests`
   - The user exceeded the CLI rate limit: 5 requests per 60 seconds
   - Tell them to wait and follow `Retry-After` if present
+- `Fetch failed`
+  - This is likely a sandbox network permission error.
+  - Ask the user for permission to make network requests with `paperbd`, then try again.
 - `403 Forbidden`
   - `FREE` tier cannot use CLI retrieval
   - Or monthly CLI quota was exceeded: `STUDENT` = 100, `RESEARCHER` = 200

@@ -64,8 +64,9 @@ async function main() {
   print('Next steps:');
   print('  1. Login:   paperbd login');
   print('  2. Status:  paperbd status');
-  print('  3. Papers:  paperbd papers');
-  print('  4. Ask:     paperbd ask --arxiv <arxiv_id> --query "<question>"');
+  print('  3. Usage:   paperbd usage');
+  print('  4. Papers:  paperbd papers');
+  print('  5. Ask:     paperbd ask --arxiv <arxiv_id> --query "<question>"');
   print();
   print('If the paper is not available yet, start the paper review first on paperbreakdown.com.');
 

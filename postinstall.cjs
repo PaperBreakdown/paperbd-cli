@@ -80,8 +80,9 @@ async function main() {
   printLine('Next steps:');
   printLine('  1. Login:   paperbd login');
   printLine('  2. Status:  paperbd status');
-  printLine('  3. Papers:  paperbd papers');
-  printLine('  4. Ask:     paperbd ask --arxiv <arxiv_id> --query "<question>"');
+  printLine('  3. Usage:   paperbd usage');
+  printLine('  4. Papers:  paperbd papers');
+  printLine('  5. Ask:     paperbd ask --arxiv <arxiv_id> --query "<question>"');
   printLine();
   printLine('Install the PaperBD skill:');
   printLine(`  ${skillInstallCommand}`);
